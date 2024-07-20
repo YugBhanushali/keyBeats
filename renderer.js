@@ -1,12 +1,12 @@
 const { ipcRenderer } = require("electron");
 const { GlobalKeyboardListener } = require("node-global-key-listener");
 const path = require("path");
-const fs = require("fs");
+const { keySounds } = require("./audioFiles/audioModules/audioModule");
+const fs = require("fs").promises;
 
 let audioContext;
-let soundBuffers = { press: {}, release: {} };
-let currentSoundSet = "mxblack";
-let genericSounds = [];
+let currentSoundSet = "alpaca"; // Default sound set
+let soundBuffers = {};
 
 console.log("Renderer process started");
 
@@ -17,65 +17,58 @@ function initAudio() {
 }
 
 // Load sound set
-function loadSoundSet(soundSet) {
-  console.log("Loading sound set:", soundSet);
-  loadSoundsForType(soundSet, "press");
-  loadSoundsForType(soundSet, "release");
-}
+async function loadSoundSet(soundSetKey) {
+  console.log("Loading sound set:", soundSetKey);
+  const soundSet = keySounds.find((set) => set.key === soundSetKey);
+  if (!soundSet) {
+    console.error("Sound set not found:", soundSetKey);
+    return;
+  }
 
-// Load sounds for a specific type (press or release)
-function loadSoundsForType(soundSet, type) {
-  const soundSetPath = path.join(__dirname, "assets", "audio", soundSet, type);
-  fs.readdir(soundSetPath, (err, files) => {
-    if (err) {
-      console.error(`Error reading ${type} sound directory:`, err);
-      return;
-    }
-    genericSounds = [];
-    files.forEach((file) => {
-      if (file.endsWith(".mp3")) {
-        const soundName = file.replace(".mp3", "");
-        loadSound(path.join(soundSetPath, file), soundName, type);
-        if (soundName.startsWith("GENERIC_")) {
-          genericSounds.push(soundName);
-        }
-      }
-    });
-  });
+  soundBuffers = { press: {}, release: {} };
+
+  // Load press sounds
+  for (const [key, audioPath] of Object.entries(soundSet.press)) {
+    await loadSound(audioPath, key, "press");
+  }
+
+  // Load release sounds
+  for (const [key, audioPath] of Object.entries(soundSet.release)) {
+    await loadSound(audioPath, key, "release");
+  }
+
+  console.log("Sound set loaded:", soundSetKey);
 }
 
 // Load individual sound
-function loadSound(filePath, soundName, type) {
-  fs.readFile(filePath, (err, data) => {
-    if (err) {
-      console.error("Error reading sound file:", err);
-      return;
-    }
-    audioContext.decodeAudioData(
-      data.buffer,
-      (buffer) => {
-        soundBuffers[type][soundName] = buffer;
-        console.log(`${type} sound loaded:`, soundName);
-      },
-      (err) => console.error("Error decoding audio data:", err)
-    );
-  });
+async function loadSound(audioPath, soundName, type) {
+  try {
+    const data = await fs.readFile(audioPath);
+    const arrayBuffer = data.buffer;
+    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+    soundBuffers[type][soundName] = audioBuffer;
+    console.log(`${type} sound loaded:`, soundName);
+  } catch (error) {
+    console.error("Error loading sound:", error, "Path:", audioPath);
+  }
 }
 
 // Play sound function
 function playSound(soundName, type) {
   let bufferToPlay;
   if (
-    ["BACKSPACE", "ENTER", "SPACE"].includes(soundName) &&
+    ["SPACE", "ENTER", "BACKSPACE"].includes(soundName) &&
     soundBuffers[type][soundName]
   ) {
     bufferToPlay = soundBuffers[type][soundName];
   } else {
     // Randomly select a generic sound
-    const genericSound =
-      genericSounds[Math.floor(Math.random() * genericSounds.length)];
-    console.log(genericSounds);
-    bufferToPlay = soundBuffers[type][genericSound];
+    const genericKeys = Object.keys(soundBuffers[type]).filter((key) =>
+      key.startsWith("GENERIC")
+    );
+    const randomGenericKey =
+      genericKeys[Math.floor(Math.random() * genericKeys.length)];
+    bufferToPlay = soundBuffers[type][randomGenericKey];
   }
 
   if (audioContext && bufferToPlay) {
@@ -90,15 +83,11 @@ function playSound(soundName, type) {
 const v = new GlobalKeyboardListener();
 
 v.addListener(function (e, down) {
-  if (
-    e.state === "DOWN" &&
-    e.name !== "MOUSE LEFT" &&
-    e.name !== "MOUSE RIGHT"
-  ) {
-    let soundName = e.name.toUpperCase();
-    if (soundName === "RETURN") soundName = "ENTER";
+  let soundName = e.name.toUpperCase();
+  if (soundName === "RETURN") soundName = "ENTER";
 
-    if (down) {
+  if (e.name !== "MOUSE LEFT" && e.name !== "MOUSE RIGHT") {
+    if (down && e.state === "DOWN") {
       console.log("Key pressed:", e.name);
       playSound(soundName, "press");
     } else {

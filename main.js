@@ -8,6 +8,7 @@ const {
 } = require("electron");
 const path = require("path");
 const fs = require("fs");
+const { keySounds } = require("./audioFiles/audioModules/audioModule");
 
 let tray = null;
 let win = null;
@@ -29,13 +30,12 @@ function createWindow() {
 
 function createMenu() {
   const soundSets = getSoundSets();
-  console.log(soundSets, "test");
   const menuTemplate = [
     {
       label: "Sound Sets",
-      submenu: soundSets.map((set) => ({
-        label: set,
-        click: () => win.webContents.send("change-sound-set", set),
+      submenu: keySounds.map((set) => ({
+        label: set.caption,
+        click: () => win.webContents.send("change-sound-set", set.key),
       })),
     },
   ];

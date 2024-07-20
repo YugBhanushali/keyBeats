@@ -1,18 +1,18 @@
-import { alpaca } from './alpaca';
-import { alpsblue } from './alpsblue';
-import { boxnavy } from './boxnavy';
-import { buckling } from './buckling';
-import { cream } from './cream';
-import { holypanda } from './holypanda';
-import { inkblack } from './inkblack';
-import { inkred } from './inkred';
-import { mxblack } from './mxblack';
-import { mxblue } from './mxblue';
-import { mxbrown } from './mxbrown';
-import { topre } from './topre';
-import { turquoise } from './turquoise';
+const { alpaca } = require("./alpaca.js");
+const { alpsblue } = require("./alpsblue.js");
+const { boxnavy } = require("./boxnavy.js");
+const { buckling } = require("./buckling.js");
+const { cream } = require("./cream.js");
+const { holypanda } = require("./holypanda.js");
+const { inkblack } = require("./inkblack.js");
+const { inkred } = require("./inkred.js");
+const { mxblack } = require("./mxblack.js");
+const { mxblue } = require("./mxblue.js");
+const { mxbrown } = require("./mxbrown.js");
+const { topre } = require("./topre.js");
+const { turquoise } = require("./turquoise.js");
 
-export const keySounds = [
+module.exports.keySounds = [
   cream,
   holypanda,
   alpaca,
@@ -26,7 +26,7 @@ export const keySounds = [
   buckling,
   alpsblue,
   topre,
-]
+];
 
 // import { cream } from './cream';
 //
@@ -47,7 +47,6 @@ export const keySounds = [
 // export const keySounds = [
 //   cream
 // ]
-
 
 // sadly you can't import in the middle of a file
 // let audiofolder = "./../../assets/audiofolder";
