@@ -7,6 +7,7 @@ const {
   systemPreferences,
 } = require("electron");
 const path = require("path");
+const fs = require("fs");
 
 let tray = null;
 let win = null;
@@ -26,6 +27,31 @@ function createWindow() {
   win.webContents.openDevTools(); // Open DevTools for debugging
 }
 
+function createMenu() {
+  const soundSets = getSoundSets();
+  console.log(soundSets, "test");
+  const menuTemplate = [
+    {
+      label: "Sound Sets",
+      submenu: soundSets.map((set) => ({
+        label: set,
+        click: () => win.webContents.send("change-sound-set", set),
+      })),
+    },
+  ];
+
+  const menu = Menu.buildFromTemplate(menuTemplate);
+  // Menu.setApplicationMenu(menu);
+  return menu;
+}
+
+function getSoundSets() {
+  const audioPath = path.join(__dirname, "assets", "audio");
+  return fs
+    .readdirSync(audioPath)
+    .filter((file) => fs.statSync(path.join(audioPath, file)).isDirectory());
+}
+
 function createTray() {
   tray = new Tray(path.join(__dirname, "keySound@2x.png"));
   const contextMenu = Menu.buildFromTemplate([
@@ -42,7 +68,8 @@ function createTray() {
     { label: "Quit", click: () => app.quit() },
   ]);
   tray.setToolTip("Key Sound App");
-  tray.setContextMenu(contextMenu);
+  const menu = createMenu();
+  tray.setContextMenu(menu);
 }
 
 function toggleWindow() {
