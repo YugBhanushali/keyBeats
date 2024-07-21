@@ -97,10 +97,19 @@ v.addListener(function (e, down) {
   }
 });
 
+// ipcRenderer.on("change-sound-set", (event, soundSet) => {
+//   console.log("Changing sound set to:", soundSet);
+//   currentSoundSet = soundSet;
+//   loadSoundSet(currentSoundSet);
+// });
+
 ipcRenderer.on("change-sound-set", (event, soundSet) => {
   console.log("Changing sound set to:", soundSet);
   currentSoundSet = soundSet;
   loadSoundSet(currentSoundSet);
+
+  // Inform the main process that the sound set has changed
+  ipcRenderer.send("sound-set-changed", soundSet);
 });
 
 // Initialize audio on page load
