@@ -19,7 +19,7 @@
   },
   "build": {
     "appId": "com.yourdomain.keysoundapp",
-    "productName": "Key Sound App",
+    "productName": "KeyBeats",
     "mac": {
       "category": "public.app-category.utilities",
       "icon": "build/icon.icns"

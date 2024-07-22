@@ -10,10 +10,26 @@ let soundBuffers = {};
 
 console.log("Renderer process started");
 
+let gainNode;
+let volumeLevel = 10;
+
 // Initialize audio context
 function initAudio() {
+  // audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  // loadSoundSet(currentSoundSet);
   audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  gainNode = audioContext.createGain();
+  gainNode.connect(audioContext.destination);
+  updateVolume(volumeLevel);
   loadSoundSet(currentSoundSet);
+}
+
+// Add this function to update the volume
+function updateVolume(value) {
+  volumeLevel = value;
+  if (gainNode) {
+    gainNode.gain.setValueAtTime(value, audioContext.currentTime);
+  }
 }
 
 // Load sound set
@@ -74,7 +90,7 @@ function playSound(soundName, type) {
   if (audioContext && bufferToPlay) {
     const source = audioContext.createBufferSource();
     source.buffer = bufferToPlay;
-    source.connect(audioContext.destination);
+    source.connect(gainNode);
     source.start(0);
   }
 }
