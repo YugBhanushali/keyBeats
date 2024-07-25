@@ -1,155 +1,156 @@
-const {
-  app,
-  BrowserWindow,
-  Tray,
-  Menu,
-  ipcMain,
-  systemPreferences,
-  nativeImage,
-} = require("electron");
+// const { app, BrowserWindow, ipcMain, Menu } = require("electron");
+// const { menubar } = require("menubar");
+// const path = require("path");
+// const { keySounds } = require("./audioFiles/audioModules/audioModule");
+
+// let mainWindow;
+// let currentSoundSet = "alpaca";
+// let currentVolume = 15;
+
+// const mb = menubar({
+//   index: "file://" + path.join(__dirname, "volume.html"),
+//   icon: path.join(__dirname, "assets", "images", "keyBeats@2x.png"),
+//   preloadWindow: true,
+//   browserWindow: {
+//     width: 300,
+//     height: 400,
+//     webPreferences: {
+//       nodeIntegration: true,
+//       contextIsolation: false,
+//     },
+//   },
+// });
+
+// mb.on("ready", () => {
+//   console.log("Menubar app is ready");
+//   createMenu();
+// });
+
+// function createMenu() {
+//   const contextMenu = Menu.buildFromTemplate([
+//     {
+//       label: "Sound Sets",
+//       submenu: keySounds.map((set) => ({
+//         label: set.caption,
+//         type: "radio",
+//         checked: set.key === currentSoundSet,
+//         click: () => {
+//           currentSoundSet = set.key;
+//           mainWindow.webContents.send("change-sound-set", set.key);
+//         },
+//       })),
+//     },
+//     { type: "separator" },
+//     {
+//       label: "Volume Control",
+//       submenu: [
+//         {
+//           label: `Volume: ${currentVolume}`,
+//           enabled: false,
+//           id: "volume-label",
+//         },
+//         {
+//           label: "Increase Volume",
+//           click: (menuItem, browserWindow, event) => {
+//             event.preventDefault();
+//             if (currentVolume < 20) {
+//               currentVolume++;
+//               updateVolumeLabel(menuItem.menu);
+//               mainWindow.webContents.send("change-volume", currentVolume);
+//             }
+//           },
+//         },
+//         {
+//           label: "Decrease Volume",
+//           click: (menuItem, browserWindow, event) => {
+//             event.preventDefault();
+//             if (currentVolume > 10) {
+//               currentVolume--;
+//               updateVolumeLabel(menuItem.menu);
+//               mainWindow.webContents.send("change-volume", currentVolume);
+//             }
+//           },
+//         },
+//       ],
+//     },
+//     { type: "separator" },
+//     { label: "Quit", click: () => app.quit() },
+//   ]);
+
+//   mb.tray.setContextMenu(contextMenu);
+// }
+
+// function updateVolumeLabel(menu) {
+//   const volumeLabel = menu.getMenuItemById("volume-label");
+//   if (volumeLabel) {
+//     volumeLabel.label = `Volume: ${currentVolume}`;
+//   }
+//   createMenu(); // Refresh the entire menu
+// }
+
+// ipcMain.on("sound-set-changed", (event, newSoundSet) => {
+//   currentSoundSet = newSoundSet;
+//   createMenu();
+// });
+
+// mb.on("after-create-window", () => {
+//   mainWindow = mb.window;
+
+//   // if (process.env.NODE_ENV === "development") {
+//   //   mainWindow.openDevTools();
+//   // }
+// });
+
+// app.on("window-all-closed", () => {
+//   if (process.platform !== "darwin") {
+//     app.quit();
+//   }
+// });
+
+const { app, BrowserWindow, ipcMain } = require("electron");
+const { menubar } = require("menubar");
 const path = require("path");
-const fs = require("fs");
-const { keySounds } = require("./audioFiles/audioModules/audioModule");
 
-let tray = null;
-let win = null;
-let currentSoundSet = "alpaca"; // Default sound set, adjust as needed
-let currentVolume = 10;
+const isDev = process.env.NODE_ENV === "development";
 
-function createWindow() {
-  win = new BrowserWindow({
-    width: 700,
-    height: 600,
-    show: true, // Changed to true
-    icon: path.join(__dirname, "build", "Frame3.icns"),
+if (isDev) {
+  try {
+    require("electron-reloader")(module);
+  } catch (_) {}
+}
+
+// ... rest of your main.js code
+
+let mainWindow;
+
+const mb = menubar({
+  index: "file://" + path.join(__dirname, "test.html"),
+  icon: path.join(__dirname, "assets", "images", "keyBeats@2x.png"),
+  preloadWindow: true,
+  browserWindow: {
+    width: 260,
+    height: 192,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
     },
-  });
-  win.loadFile("index.html");
-  // win.webContents.openDevTools(); // Open DevTools for debugging
-}
-
-function createMenu() {
-  const menuTemplate = [
-    { type: "separator" },
-    {
-      label: win.isVisible() ? "Hide Window" : "Show Window",
-      click: toggleWindow,
-    },
-    { type: "separator" },
-    {
-      label: app.dock.isVisible() ? "Hide from Dock" : "Show in Dock",
-      click: () => {
-        toggleDockVisibility(!app.dock.isVisible());
-        updateTrayMenu();
-      },
-    },
-    { type: "separator" },
-    {
-      label: "Sound Sets",
-      submenu: keySounds.map((set) => ({
-        label: set.caption,
-        type: "radio",
-        checked: set.key === currentSoundSet,
-        click: () => {
-          currentSoundSet = set.key;
-          win.webContents.send("change-sound-set", set.key);
-          tray.setContextMenu(createMenu());
-        },
-      })),
-    },
-    { type: "separator" },
-    {
-      label: "Volume Control",
-      submenu: [
-        {
-          label: `Volume: ${currentVolume}`,
-          enabled: false,
-          id: "volume-label",
-        },
-        {
-          label: "Increase Volume",
-          click: (menuItem, browserWindow, event) => {
-            event.preventDefault(); // Prevent menu from closing
-            if (currentVolume < 20) {
-              currentVolume++;
-              updateVolumeLabel(menuItem.menu);
-              win.webContents.send("change-volume", currentVolume);
-            }
-          },
-        },
-        {
-          label: "Decrease Volume",
-          click: (menuItem, browserWindow, event) => {
-            event.preventDefault(); // Prevent menu from closing
-            if (currentVolume > 10) {
-              currentVolume--;
-              updateVolumeLabel(menuItem.menu);
-              win.webContents.send("change-volume", currentVolume);
-            }
-          },
-        },
-      ],
-    },
-    { type: "separator" },
-    { label: "Quit", click: () => app.quit() },
-  ];
-
-  const menu = Menu.buildFromTemplate(menuTemplate);
-  // Menu.setApplicationMenu(menu);
-  return menu;
-}
-
-function createTray() {
-  const trayImage = nativeImage.createFromPath(
-    path.join(__dirname, "assets", "images", "keyBeats@2x.png")
-  );
-  tray = new Tray(trayImage.resize({ width: 16, height: 16 }));
-  tray.setToolTip("KeyBeats");
-  const menu = createMenu();
-  tray.setContextMenu(menu);
-}
-
-function updateTrayMenu() {
-  tray.setContextMenu(createMenu());
-}
-
-function toggleWindow() {
-  if (win.isVisible()) {
-    win.hide();
-  } else {
-    win.show();
-  }
-  updateTrayMenu();
-}
-function selectSound(soundFile) {
-  win.webContents.send("change-sound", soundFile);
-}
-
-// Add this function
-function toggleDockVisibility(show) {
-  if (process.platform === "darwin") {
-    if (show) {
-      app.dock.show();
-    } else {
-      app.dock.hide();
-    }
-  }
-}
-
-// Listen for sound set changes from renderer
-ipcMain.on("sound-set-changed", (event, newSoundSet) => {
-  currentSoundSet = newSoundSet;
-  tray.setContextMenu(createMenu());
+  },
 });
 
-app.whenReady().then(() => {
-  createWindow();
-  createTray();
+mb.on("ready", () => {
+  console.log("Menubar app is ready");
+});
 
-  toggleDockVisibility(false); // Hide from dock by default
+mb.on("after-create-window", () => {
+  mainWindow = mb.window;
+
+  if (process.env.NODE_ENV === "development") {
+    // mainWindow.openDevTools();
+  }
+});
+
+ipcMain.on("quit-app", () => {
+  app.quit();
 });
 
 app.on("window-all-closed", () => {

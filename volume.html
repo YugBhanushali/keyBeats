@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Volume Control</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        user-select: none;
+      }
+      #volumeSlider {
+        width: 100%;
+      }
+      #volumeValue {
+        text-align: center;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <input
+      type="range"
+      id="volumeSlider"
+      min="10"
+      max="20"
+      step="1"
+      value="15"
+    />
+    <div id="volumeValue">15</div>
+    <script>
+      const { ipcRenderer } = require("electron");
+      const slider = document.getElementById("volumeSlider");
+      const value = document.getElementById("volumeValue");
+
+      slider.addEventListener("input", (e) => {
+        const newVolume = parseInt(e.target.value);
+        value.textContent = newVolume;
+        ipcRenderer.send("volume-change", newVolume);
+      });
+
+      ipcRenderer.on("set-volume", (event, volume) => {
+        slider.value = volume;
+        value.textContent = volume;
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KeyBeats</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+      };
+    </script>
+  </head>
+  <body
+    class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-sans"
+  >
+    <div class="container mx-auto p-3 max-w-md">
+      <div
+        class="bg-white dark:bg-gray-800 shadow-lg shadow-[#0000003a] rounded-md overflow-hidden"
+      >
+        <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+          <li class="p-2 transition duration-150 ease-in-out w-full">
+            <div class="flex item-center justify-between w-full gap-2">
+              <div class="flex justify-center h-full item-centre gap-x-1">
+                <div class="flex item-center">
+                  <img
+                    src="../key-sound-app raw/assets/images/frame.png"
+                    class="h-8 w-8"
+                  />
+                </div>
+                <div
+                  class="flex justify-center item-center font-semibold h-full mt-1"
+                >
+                  KeyBeats
+                </div>
+              </div>
+              <div class="flex gap-x-2">
+                <button
+                  id="themeToggle"
+                  class="p-1 rounded-md bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-700 h-8 w-8"
+                >
+                  <i class="fas fa-sun text-yellow-500 dark:hidden"></i>
+                  <i class="fas fa-moon text-blue-300 hidden dark:inline"></i>
+                </button>
+
+                <button
+                  class="flex p-2 h-8 w-8 rounded-md bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition duration-300"
+                >
+                  <a
+                    href="https://github.com/yourusername/yourrepo"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="flex item-center"
+                  >
+                    <i class="fab fa-github"></i>
+                  </a>
+                </button>
+              </div>
+            </div>
+          </li>
+
+          <li
+            class="p-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150 ease-in-out"
+          >
+            <div class="flex items-center gap-3">
+              <i class="fas fa-music text-blue-500"></i>
+              <div class="flex-grow">
+                <select
+                  id="soundSetSelect"
+                  class="w-full p-1 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
+                >
+                  <option>Select a sound set...</option>
+                </select>
+              </div>
+            </div>
+          </li>
+
+          <li
+            class="p-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150 ease-in-out w-full"
+          >
+            <div class="flex item-center w-full gap-2">
+              <div>
+                <i class="fas fa-volume-up text-green-500"></i>
+              </div>
+              <div class="flex w-full">
+                <input
+                  type="range"
+                  id="volumeSlider"
+                  min="10"
+                  max="20"
+                  step="1"
+                  value="15"
+                  class="mt-2 w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer"
+                />
+              </div>
+              <div id="volumeValue" class="flex">15</div>
+            </div>
+          </li>
+
+          <li
+            class="p-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150 ease-in-out"
+          >
+            <div class="flex items-center justify-between gap-2 w-full">
+              <button
+                id="quitButton"
+                class="flex w-full items-center justify-center bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-4 rounded-md transition duration-300"
+              >
+                <i class="fas fa-power-off mr-2"></i>
+                Quit
+              </button>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <script>
+      // Theme toggle functionality
+      const themeToggle = document.getElementById("themeToggle");
+      const html = document.documentElement;
+
+      themeToggle.addEventListener("click", () => {
+        html.classList.toggle("dark");
+        localStorage.setItem(
+          "theme",
+          html.classList.contains("dark") ? "dark" : "light"
+        );
+      });
+
+      // Check for saved theme preference or prefer-color-scheme
+      if (
+        localStorage.theme === "dark" ||
+        (!("theme" in localStorage) &&
+          window.matchMedia("(prefers-color-scheme: dark)").matches)
+      ) {
+        html.classList.add("dark");
+      } else {
+        html.classList.remove("dark");
+      }
+    </script>
+    <script src="renderer.js"></script>
+  </body>
+</html>
