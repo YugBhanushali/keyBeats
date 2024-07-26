@@ -12,8 +12,32 @@
     <script>
       tailwind.config = {
         darkMode: "class",
+        theme: {
+          extend: {
+            fontSize: {
+              xs: ".75rem",
+              sm: ".875rem",
+              base: "1rem",
+              lg: "1.125rem",
+              xl: "1.25rem",
+            },
+          },
+        },
       };
     </script>
+    <style>
+      body {
+        min-width: 260px;
+        max-width: 400px;
+        overflow: hidden;
+      }
+      .content-wrapper {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        max-height: 250px;
+      }
+    </style>
   </head>
   <body
     class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 font-sans"
@@ -27,10 +51,7 @@
             <div class="flex item-center justify-between w-full gap-2">
               <div class="flex justify-center h-full item-centre gap-x-1">
                 <div class="flex item-center">
-                  <img
-                    src="../key-sound-app raw/assets/images/frame.png"
-                    class="h-8 w-8"
-                  />
+                  <img id="keyBeatsLogo" src="" class="h-8 w-8" />
                 </div>
                 <div
                   class="flex justify-center item-center font-semibold h-full mt-1"
@@ -51,7 +72,7 @@
                   class="flex p-2 h-8 w-8 rounded-md bg-gray-200 dark:bg-gray-600 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600 transition duration-300"
                 >
                   <a
-                    href="https://github.com/yourusername/yourrepo"
+                    href="https://github.com/YugBhanushali/keyBeats"
                     target="_blank"
                     rel="noopener noreferrer"
                     class="flex item-center"
@@ -63,9 +84,7 @@
             </div>
           </li>
 
-          <li
-            class="p-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150 ease-in-out"
-          >
+          <li class="p-2 transition duration-150 ease-in-out">
             <div class="flex items-center gap-3">
               <i class="fas fa-music text-blue-500"></i>
               <div class="flex-grow">
@@ -79,9 +98,7 @@
             </div>
           </li>
 
-          <li
-            class="p-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150 ease-in-out w-full"
-          >
+          <li class="p-2 transition duration-150 ease-in-out w-full">
             <div class="flex item-center w-full gap-2">
               <div>
                 <i class="fas fa-volume-up text-green-500"></i>
@@ -101,9 +118,7 @@
             </div>
           </li>
 
-          <li
-            class="p-2 hover:bg-gray-50 dark:hover:bg-gray-700 transition duration-150 ease-in-out"
-          >
+          <li class="p-2 transition duration-150 ease-in-out">
             <div class="flex items-center justify-between gap-2 w-full">
               <button
                 id="quitButton"

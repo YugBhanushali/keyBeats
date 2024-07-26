@@ -18,14 +18,14 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 700,
     height: 600,
-    show: true, // Changed to true
+    show: false, // Changed to true
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
     },
   });
   mainWindow.loadFile("index.html");
-  mainWindow.webContents.openDevTools(); // Open DevTools for debugging
+  // mainWindow.webContents.openDevTools(); // Open DevTools for debugging
 }
 
 let trayImage = nativeImage.createFromPath(
@@ -34,13 +34,17 @@ let trayImage = nativeImage.createFromPath(
 const mb = menubar({
   index: "file://" + path.join(__dirname, "menu.html"),
   icon: trayImage.resize({ height: 16, width: 16 }),
+  showDockIcon: true,
   preloadWindow: true,
   browserWindow: {
     width: 260,
     height: 192,
+    resizable: false,
+    useContentSize: true,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
+      additionalArguments: [`--app-path=${__dirname}`],
     },
   },
 });
@@ -50,7 +54,7 @@ mb.on("ready", () => {
 });
 
 mb.on("after-create-window", () => {
-  mainWindow = mb.window;
+  // mainWindow = mb.window;
 
   if (process.env.NODE_ENV === "development") {
     // mainWindow.openDevTools();
