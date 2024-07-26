@@ -34,7 +34,6 @@ let trayImage = nativeImage.createFromPath(
 const mb = menubar({
   index: "file://" + path.join(__dirname, "menu.html"),
   icon: trayImage.resize({ height: 16, width: 16 }),
-  showDockIcon: true,
   preloadWindow: true,
   browserWindow: {
     width: 260,
