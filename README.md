@@ -9,6 +9,8 @@
 
 KeyBeats is an open-source macOS application that brings the satisfying sounds of mechanical keyboards to your typing experience. Whether you're coding, writing, or just browsing the web, KeyBeats adds a tactile audio dimension to your keystrokes.
 
+https://github.com/user-attachments/assets/25f75b1a-83ec-49d2-9027-e4e02032e89b
+
 ## Features
 
 - **Realistic Mechanical Keyboard Sounds**: Experience the auditory pleasure of typing on a mechanical keyboard, no matter what device you're using.
