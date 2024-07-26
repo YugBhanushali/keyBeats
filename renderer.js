@@ -80,7 +80,7 @@ function playSound(soundName, type) {
 function updateVolume(value) {
   volumeLevel = value;
   if (gainNode) {
-    const gainValue = (value - 10) / 5;
+    const gainValue = value * 3;
     gainNode.gain.setValueAtTime(gainValue, audioContext.currentTime);
   }
   document.getElementById("volumeValue").textContent = value;
