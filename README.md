@@ -1,6 +1,6 @@
 <div style="display: flex; align-items: center;">
 <div>
- <img src="../key-sound-app%20raw/assets/images/frame.png" alt="KeyBeats Logo" width="50" height="50" style="margin-right: 10px; "/>
+ <img src="./assets/images/frame.png" alt="KeyBeats Logo" width="50" height="50" style="margin-right: 10px; "/>
 </div>
  <div>
   <h1 style="margin: 0;">KeyBeats</h1>
