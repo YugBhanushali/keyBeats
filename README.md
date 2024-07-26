@@ -34,7 +34,7 @@ KeyBeats is an open-source macOS application that brings the satisfying sounds o
 
 ## Installation
 
-1. Go to the [Releases](https://github.com/yourusername/keybeats/releases) page.
+1. Go to the [Releases](https://github.com/YugBhanushali/keyBeats/releases) page.
 2. Download the latest version of KeyBeats for macOS.
 3. Open the downloaded `.dmg` file.
 4. Drag the KeyBeats app to your Applications folder.
