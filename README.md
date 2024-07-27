@@ -77,8 +77,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- Thanks to all the mechanical keyboard enthusiasts who inspired this project.
-- Sound samples sourced from [mention your source if applicable].
+- Sound samples sourced from [kbsim](https://github.com/tplai/kbsim) by tplai.
 
 ## Contact
 
