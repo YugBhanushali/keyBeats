@@ -29,11 +29,11 @@ function createWindow() {
 }
 
 let trayImage = nativeImage.createFromPath(
-  path.join(__dirname, "assets", "images", "keyBeats@2x.png")
+  path.join(__dirname, "assets", "images", "keyBeatsTemplate@2x.png")
 );
 const mb = menubar({
   index: "file://" + path.join(__dirname, "menu.html"),
-  icon: trayImage.resize({ height: 16, width: 16 }),
+  icon: trayImage,
   preloadWindow: true,
   browserWindow: {
     width: 260,
