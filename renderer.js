@@ -108,6 +108,62 @@ function initUI() {
   const volumeSlider = document.getElementById("volumeSlider");
   const quitButton = document.getElementById("quitButton");
 
+  const appVersion = document.getElementById("appVersion");
+  // Set app version
+  const version = process.argv
+    .find((arg) => arg.startsWith("--app-version="))
+    .split("=")[1];
+  appVersion.textContent = `v${version}`;
+
+  const updateButton = document.getElementById("updateButton");
+  const updateText = document.getElementById("updateText");
+  const updateIcon = document.getElementById("updateIcon");
+
+  function setUpdateButtonState(state) {
+    switch (state) {
+      case "update-available":
+        updateButton.classList.add("show");
+        updateText.textContent = "Update";
+        updateIcon.className = "fas fa-download";
+        break;
+      case "downloading":
+        updateText.textContent = "Downloading...";
+        updateIcon.className = "fas fa-spinner fa-spin";
+        break;
+      case "update-downloaded":
+        updateText.textContent = "Install";
+        updateIcon.className = "fas fa-arrow-circle-down";
+        break;
+    }
+  }
+
+  // Update functionality
+  ipcRenderer.on("update-available", () => {
+    setUpdateButtonState("update-available");
+  });
+
+  ipcRenderer.on("download-progress", (event, progressObj) => {
+    updateText.textContent = `${Math.round(progressObj.percent)}%`;
+  });
+
+  ipcRenderer.on("update-downloaded", () => {
+    setUpdateButtonState("update-downloaded");
+  });
+
+  updateButton.addEventListener("click", () => {
+    switch (updateText.textContent) {
+      case "Update":
+        ipcRenderer.send("start-download");
+        setUpdateButtonState("downloading");
+        break;
+      case "Install":
+        ipcRenderer.send("install-update");
+        break;
+      default:
+        // Do nothing if it's currently downloading
+        break;
+    }
+  });
   // Populate sound set options
   keySounds.forEach((set) => {
     const option = document.createElement("option");

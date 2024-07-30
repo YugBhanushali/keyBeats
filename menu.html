@@ -37,6 +37,21 @@
         height: 100vh;
         max-height: 250px;
       }
+      #updateButton {
+        transition: opacity 0.3s ease-out;
+        width: 0.3s ease-out;
+        opacity: 0;
+        width: 0;
+        padding: 0;
+        display: none;
+        overflow: hidden;
+      }
+      #updateButton.show {
+        display: flex;
+        opacity: 1;
+        width: 50%;
+        padding: 0.25rem 0.5rem;
+      }
     </style>
   </head>
   <body
@@ -53,10 +68,12 @@
                 <div class="flex item-center">
                   <img id="keyBeatsLogo" src="" class="h-8 w-8" />
                 </div>
-                <div
-                  class="flex justify-center item-center font-semibold h-full mt-1"
-                >
-                  KeyBeats
+                <div class="flex item-center justify-bottom mt-1 gap-x-1">
+                  <div class="font-semibold">KeyBeats</div>
+                  <div
+                    id="appVersion"
+                    class="text-[12px] text-gray-500 dark:text-gray-400 mt-1"
+                  ></div>
                 </div>
               </div>
               <div class="flex gap-x-2">
@@ -119,13 +136,21 @@
           </li>
 
           <li class="p-2 transition duration-150 ease-in-out">
-            <div class="flex items-center justify-between gap-2 w-full">
+            <div class="flex items-center justify-center gap-2 w-full">
               <button
                 id="quitButton"
-                class="flex w-full items-center justify-center bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-4 rounded-md transition duration-300"
+                class="flex items-center flex-grow justify-center bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-4 rounded-md transition duration-300"
               >
                 <i class="fas fa-power-off mr-2"></i>
                 Quit
+              </button>
+              <button
+                id="updateButton"
+                class="flex gap-x-1 items-center justify-center bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-2 rounded-md transition duration-300 text-sm"
+              >
+                <!-- <i class="fas fa-sync-alt mr-2"></i> -->
+                <i id="updateIcon" class="fas fa-sync-alt"></i>
+                <span class="font-bold py-[1.5px]" id="updateText">Update</span>
               </button>
             </div>
           </li>
